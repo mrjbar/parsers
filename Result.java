@@ -2,30 +2,33 @@ import java.util.*;
 
 public class Result {
    
-   protected List<String> unseen; // unprocessed tokens
+   private LinkedList<String> tokens; // unprocessed tokens
    protected boolean fail; // parser error
-   protected int index = 0;
+   protected ListIterator<String> unseen;
    
    //# unseen tokens
-   public int pending() { return unseen.size(); }
+   public int pending() { return tokens.size() - unseen.nextIndex(); }
    
    public Result(String s, String regEx) {
       fail = false;
       String[] a = s.split(regEx);
-      unseen = new ArrayList<String>(); 
+      tokens = new LinkedList<String>(); 
       for(int i = 0; i < a.length; i++) {
-         unseen.add(a[i]);
+         tokens.add(a[i]);
       }
+      unseen = tokens.listIterator();
    }
    public Result(String s) {
       this(s, "\\s+");
    }
    public Result() {
-       unseen = new ArrayList<String>(); 
+       tokens = new LinkedList<String>(); 
+       unseen = tokens.listIterator();
        fail = false;
    }
    
    public String toString() {
-      return "[fail = " + fail + "; unseen = " + unseen + "]";
+	   
+      return String.format("[fail = %s; unseen = %s]", fail, tokens.subList(unseen.nextIndex(), tokens.size()));
    }
 }

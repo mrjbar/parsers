@@ -24,15 +24,16 @@ public class Combinators {
 	      parser.setParser(
 	         (result) -> {
         	 	 Literal answer = new Literal();
-        		 String token = result.unseen.get(0);
+        	 	String token = "";
+        	 	 if(result.unseen.hasNext())
+        	 		 token = result.unseen.next();
         		 if(!token.matches(regex))
         		 {
         			 result.fail = true;
+        			 result.unseen.previous();
         			 return result;
-        			 
         		 }
         		 answer.token = token;
-        		 result.unseen.remove(0);
     			 answer.unseen = result.unseen;	            
             return answer;
 	      });
@@ -79,18 +80,23 @@ public class Combinators {
 	            	return result; 
 	            
 	            Option answer = new Option();
-	            if(result.unseen.isEmpty())
+	            
+	            // If another token exist then parse it
+	            if(result.unseen.hasNext())
 	            {
-	            	Result l = new Result();
-	            	l.fail = true;
-	            	answer.kid = l;
-	            	return answer;
+	            	answer.kid = p.apply(result);
+		            if(answer.kid.fail)
+		            	answer.kid.unseen.next();
+		            answer.unseen = answer.kid.unseen;
+		            return answer;
 	            }
-	            answer.kid = p.apply(result);
-	            if(answer.kid.fail)
-	            	answer.kid.unseen.remove(0);
-	            answer.unseen = answer.kid.unseen;
-	            return answer; 
+
+            	Result r = new Result();
+            	r.fail = true;
+            	answer.kid = r;
+            	answer.unseen = result.unseen;
+            	return answer;
+	             
 	      });
 	      return parser;
    }
@@ -104,15 +110,14 @@ public class Combinators {
 		            	return result; 
 		            
 		            Iteration answer = new Iteration();
-		            Result r;
-		            r = p.apply(result);
+		            Result r = p.apply(result);
             		answer.fail = r.fail;
 		            answer.unseen = r.unseen;
 
             		if(answer.fail) return result;          			
             		answer.kids.add(r);
 
-            		while(!answer.unseen.isEmpty()) {	
+            		while(answer.unseen.hasNext()) {	
 		            	r = p.apply(r);
 		            	if(r.fail) return answer;
 			            answer.kids.add(r);

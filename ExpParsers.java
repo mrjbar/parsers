@@ -11,7 +11,9 @@ public class ExpParsers {
 
    public static Parser list2 = new Parser();
    static { list2.setParser(Combinators.seq(term, Combinators.opt(list2))); }
-
+   
+   public static Parser opt = Combinators.opt(number);
+   
    public static void test(Parser p, String s) {
 	   System.out.println("s = " + s);
 	   Result tree =  p.apply(new Result(s));
@@ -95,7 +97,15 @@ public class ExpParsers {
 	   test(ExpParsers.list2, s);
    }
    
-   public static void tesRepParser() {
+   public static void tesOptParser() {
+	   System.out.println("Test List 2 Parser");
+	   String s = "5";
+	   test(ExpParsers.opt, s);
+	   s = "F F F";
+	   test(ExpParsers.opt, s);
+   }
+   
+   /*public static void tesRepParser() {
 	   System.out.println("Test Repetition Parser");
 	   String s = "Jabari Lofton";
 	   test(ExpParsers.rep, s);
@@ -114,7 +124,7 @@ public class ExpParsers {
 	   System.out.println("Test Product Parser");
 	   String s = "5 && 5";
 	   test(ExpParsers.product, s);
-   }
+   }*/
    
    public static void testSumParser() {
 	   // SUM ::= PRODUCT | TERM~SUM
@@ -132,9 +142,10 @@ public class ExpParsers {
 	   //testBooleParser();
 	   //testOperatorParser();
 	   //testTermParser();
-	   testList2Parser();
+	   //testList2Parser();
 	   //tesRepParser();
 	   //testProductParser();
-	   //testSumParser();
+	   testSumParser();
+	   //tesOptParser();
    }
 }
