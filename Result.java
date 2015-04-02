@@ -2,16 +2,14 @@ import java.util.*;
 
 public class Result {
    
-   private LinkedList<String> tokens; // unprocessed tokens
+   protected LinkedList<String> tokens; // unprocessed tokens
    protected boolean fail; // parser error
    protected ListIterator<String> unseen;
    
    //# unseen tokens
    public int pending() {
-	   System.out.println(tokens.size());
-	   System.out.println(unseen.nextIndex());
-	   
-
+	   //System.out.println(tokens.size());
+	   //System.out.println(unseen.nextIndex());
 	   return tokens.size() - unseen.nextIndex(); }
    
    public Result(String s, String regEx) {

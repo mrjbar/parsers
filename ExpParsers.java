@@ -103,7 +103,7 @@ public class ExpParsers {
 	   System.out.println("Test List 2 Parser");
 	   String s = "5";
 	   test(ExpParsers.opt, s);
-	   s = "F F F";
+	   s = "s";
 	   test(ExpParsers.opt, s);
    }
    
@@ -119,21 +119,21 @@ public class ExpParsers {
 	   test(ExpParsers.rep, s);
 	   s = "+ * &";
 	   test(ExpParsers.rep, s);
-   }
+   }*/
    
    public static void testProductParser() {
 	   // PRODUCT ::= TERM~(OPERATOR~TERM)+
 	   System.out.println("Test Product Parser");
-	   String s = "5 && 5";
+	   String s = "5 && 5 || 5";
 	   test(ExpParsers.product, s);
-   }*/
+   }
    
    public static void testSumParser() {
 	   // SUM ::= PRODUCT | TERM~SUM
 	   System.out.println("Test Product Parser");
 	   String s = "1 + 2 + 8";
-	   //test(ExpParsers.sum, s);
-	   s = "1 + 1 + 2";
+	   test(ExpParsers.sum, s);
+	   s = "true 1 + 1 + 2";
 	   test(ExpParsers.sum, s);
    }
    
@@ -146,8 +146,8 @@ public class ExpParsers {
 	   //testTermParser();
 	   //testList2Parser();
 	   //tesRepParser();
-	   //testProductParser();
-	   testSumParser();
+	   testProductParser();
+	   //testSumParser();
 	   //tesOptParser();
    }
 }

@@ -1,4 +1,3 @@
-
 public class Literal extends Result {
 	
 	protected String token;
