@@ -1,6 +1,3 @@
-import java.util.function.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 public class Combinators {
    
    // returns p1 | p2
