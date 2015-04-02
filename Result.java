@@ -7,7 +7,12 @@ public class Result {
    protected ListIterator<String> unseen;
    
    //# unseen tokens
-   public int pending() { return tokens.size() - unseen.nextIndex(); }
+   public int pending() {
+	   System.out.println(tokens.size());
+	   System.out.println(unseen.nextIndex());
+	   
+
+	   return tokens.size() - unseen.nextIndex(); }
    
    public Result(String s, String regEx) {
       fail = false;
