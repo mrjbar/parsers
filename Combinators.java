@@ -7,8 +7,9 @@ public class Combinators {
    public static Parser alt(Parser p1, Parser p2) {
       Parser parser = new Parser();
       parser.setParser(
-         result->{
-            if (result.fail)return result; 
+         (result) -> {
+            if (result.fail) 
+            	return result; 
             Choice answer = new Choice();
             answer.choice = p1.apply(result);
             if (answer.choice.fail)  {
@@ -20,39 +21,109 @@ public class Combinators {
       });
       return parser;
    }
-
-   // returns p1 ~ p2
-   //public static Parser seq(Parser p1, Parser p2) {...}
    
-   // returns p+ 
-   //public static Parser rep(Parser p) {...}
-   
-   // returns p? 
-   //public static Parser opt(Parser p) {...}
-   
-   // returns p = regExp
    public static Parser regEx(String regex) {
-	   Pattern pattern = Pattern.compile(regex);
 	   Parser parser = new Parser();
 	      parser.setParser(
 	         (result) -> {
-	        	 for(int i=0; i<result.unseen.size(); i++)
-	        	 {
-	        		 String token = result.unseen.get(i);
-	        		 Matcher matcher = pattern.matcher(token);
-	        		 if(matcher.find())
-	        			 result.unseen.remove(i);
-	        		 else
-	        		 {
-	        			 result.fail = true;
-	        			 return result;
-	        		 }
-	        	 }
-	            
-	            return result;
+        	 	 Literal answer = new Literal();
+        		 String token = result.unseen.get(0);
+        		 if(!token.matches(regex))
+        		 {
+        			 result.fail = true;
+        			 return result;
+        			 
+        		 }
+        		 answer.token = token;
+        		 result.unseen.remove(0);
+    			 answer.unseen = result.unseen;	            
+            return answer;
 	      });
 	      return parser;
    }
 
-   // etc.
+   // returns p1 ~ p2
+   public static Parser seq(Parser p1, Parser p2) {
+	   Parser parser = new Parser();
+	      parser.setParser(
+	         (result) -> {
+	            if (result.fail) 
+	            	return result; 
+	            
+	            Concat answer = new Concat();
+	            answer.kids[0] = p1.apply(result);
+	            if (answer.kids[0].fail)  
+	            {
+	            	result.fail = true;
+		            return result;	
+	            }   
+	            
+	            answer.unseen = answer.kids[0].unseen;
+	            answer.kids[1] = p2.apply(answer.kids[0]);
+	            	
+	            if (answer.kids[1].fail)  
+	            {
+	            	result.fail = true;
+		            return result;
+		        }
+	            
+	            answer.unseen = answer.kids[1].unseen;
+	            return answer; 
+	      });
+	      return parser;
+   }
+   
+   // returns p? 
+   public static Parser opt(Parser p) {
+	   Parser parser = new Parser();
+	      parser.setParser(
+	         (result) -> {
+	            if (result.fail) 
+	            	return result; 
+	            
+	            Option answer = new Option();
+	            if(result.unseen.isEmpty())
+	            {
+	            	Result l = new Result();
+	            	l.fail = true;
+	            	answer.kid = l;
+	            	return answer;
+	            }
+	            answer.kid = p.apply(result);
+	            if(answer.kid.fail)
+	            	answer.kid.unseen.remove(0);
+	            answer.unseen = answer.kid.unseen;
+	            return answer; 
+	      });
+	      return parser;
+   }
+   
+   // returns p+ 
+   public static Parser rep(Parser p) {
+	   Parser parser = new Parser();
+	   parser.setParser(
+		         (result) -> {
+		            if (result.fail) 
+		            	return result; 
+		            
+		            Iteration answer = new Iteration();
+		            Result r;
+		            r = p.apply(result);
+            		answer.fail = r.fail;
+		            answer.unseen = r.unseen;
+
+            		if(answer.fail) return result;          			
+            		answer.kids.add(r);
+
+            		while(!answer.unseen.isEmpty()) {	
+		            	r = p.apply(r);
+		            	if(r.fail) return answer;
+			            answer.kids.add(r);
+			            answer.fail = r.fail;
+			            answer.unseen = r.unseen;
+		            }
+		            return answer;
+		      });
+		      return parser;
+   }
 }

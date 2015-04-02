@@ -4,6 +4,7 @@ public class Result {
    
    protected List<String> unseen; // unprocessed tokens
    protected boolean fail; // parser error
+   protected int index = 0;
    
    //# unseen tokens
    public int pending() { return unseen.size(); }
