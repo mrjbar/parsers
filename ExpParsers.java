@@ -19,6 +19,8 @@ public class ExpParsers {
 	   Result tree =  p.apply(new Result(s));
 	   System.out.println("tree = " + tree);
 	   System.out.println("pending = " + tree.pending() + "\n");   
+	   //System.out.println("head of unseen = " + tree.unseen.previous() + "\n");   
+
 	}
    
    public static void testNumberParser() {
@@ -131,7 +133,7 @@ public class ExpParsers {
 	   System.out.println("Test Product Parser");
 	   String s = "1 + 2 + 8";
 	   //test(ExpParsers.sum, s);
-	   s = "true 1 + 2 + 8";
+	   s = "1 + 1 + 2";
 	   test(ExpParsers.sum, s);
    }
    
