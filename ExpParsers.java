@@ -82,6 +82,8 @@ public class ExpParsers {
 	   test(ExpParsers.product, s);
 	   s = "1 && 2 || 3 + 4 * 5 !";
 	   test(ExpParsers.product, s);
+	   s = "&& 2 || 3 + 4 * 5 !";
+	   test(ExpParsers.product, s);
    }
    
    public static void main(String[] args)

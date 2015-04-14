@@ -5,7 +5,6 @@ public class Combinators {
 		      parser.setParser(
 		         (result) -> {
 	        	 	 Literal answer = new Literal();
-	        	 	 String re = regex;
 	        	 	 String token = "";
 	        	 	 if(!result.unseen.hasNext())
 	        	 	 {
