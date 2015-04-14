@@ -1,9 +1,11 @@
 public class Concat extends Result {
 	
-	protected Result[] kids = new Result[2];
+	protected Result first_kid;
+	protected Result second_kid;
+
 	
 	public String toString() {
-		return String.format("[%s ~ %s]", kids[0], kids[1]);
+		return String.format("[%s ~ %s]", first_kid, second_kid);
 	}
 
 }

@@ -60,25 +60,25 @@ public class Combinators {
 	            	return result; 
 	            
 	            Concat answer = new Concat();
-	            answer.kids[0] = p1.apply(result);
-	            if (answer.kids[0].fail)  
+	            answer.first_kid = p1.apply(result);
+	            if (answer.first_kid.fail)  
 	            {
 	            	result.fail = true;
 		            return result;	
 	            }   
-	            answer.tokens = answer.kids[0].tokens;
-	            answer.unseen = answer.kids[0].unseen;
-	            answer.kids[1] = p2.apply(answer.kids[0]);
+	            answer.tokens = answer.first_kid.tokens;
+	            answer.unseen = answer.first_kid.unseen;
+	            answer.second_kid = p2.apply(answer.first_kid);
 	            	
-	            if (answer.kids[1].fail)  
+	            if (answer.second_kid.fail)  
 	            {
 	            	if(result.unseen.hasPrevious())
 	            		result.unseen.previous();
 	            	result.fail = true;
 		            return result;
 		        }
-	            answer.tokens = answer.kids[1].tokens;
-	            answer.unseen = answer.kids[1].unseen;
+	            answer.tokens = answer.second_kid.tokens;
+	            answer.unseen = answer.second_kid.unseen;
 	            return answer; 
 	      });
 	      return parser;
