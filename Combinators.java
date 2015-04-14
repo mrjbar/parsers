@@ -5,10 +5,14 @@ public class Combinators {
 		      parser.setParser(
 		         (result) -> {
 	        	 	 Literal answer = new Literal();
-	        	 	 //String re = regex;
-	        	 	String token = "";
-	        	 	 if(result.unseen.hasNext())
-	        	 		 token = result.unseen.next();
+	        	 	 String re = regex;
+	        	 	 String token = "";
+	        	 	 if(!result.unseen.hasNext())
+	        	 	 {
+	        	 		 result.fail = true;
+	        	 		 return result;
+	        	 	 }
+	        	 	 token = result.unseen.next();
 	        		 if(!token.matches(regex))
 	        		 {
 	        			 result.fail = true;
@@ -20,7 +24,7 @@ public class Combinators {
 	        		 answer.fail = false;
 	        		 answer.token = token;
 	    			 answer.unseen = result.unseen;	            
-	            return answer;
+	    			 return answer;
 		      });
 		      return parser;
 	   }
@@ -35,6 +39,7 @@ public class Combinators {
             Choice answer = new Choice();
             answer.choice = p1.apply(result);
             if (answer.choice.fail)  {
+            	result.fail = false;
                answer.choice = p2.apply(result);
             }
             if (answer.choice.fail) return answer.choice;
@@ -67,6 +72,8 @@ public class Combinators {
 	            	
 	            if (answer.kids[1].fail)  
 	            {
+	            	if(result.unseen.hasPrevious())
+	            		result.unseen.previous();
 	            	result.fail = true;
 		            return result;
 		        }
@@ -91,18 +98,15 @@ public class Combinators {
 	            if(result.unseen.hasNext())
 	            {
 	            	answer.kid = p.apply(result);
-		            if(answer.kid.fail)
-		            	answer.kid.unseen.next();
 	        		answer.fail = false;
 	        		answer.tokens = answer.kid.tokens;
 		            answer.unseen = answer.kid.unseen;
 		            return answer;
 	            }
-
-            	Result r = new Result();
-            	answer.tokens = r.tokens;
-            	answer.kid = r;
-            	answer.unseen = result.unseen;
+	            
+            	Result blank = new Result();
+            	blank.fail = true;
+            	answer.kid = blank;
             	return answer;
 	             
 	      });
